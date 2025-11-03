@@ -39,11 +39,15 @@ export async function POST(req: NextRequest) {
     if (!isAllowed(title, description)) return NextResponse.json({ error: "Disallowed content" }, { status: 400 });
 
     const market = await db.market.create({
-      data: {
-        title, description, category, closesAt: new Date(closesAt),
-        options: { create: options.map(label => ({ label })) },
-      }
-    });
+  data: {
+    title,
+    description,
+    category: category ?? "General", // fallback if undefined
+    closesAt: new Date(closesAt),
+    options: { create: options.map((label: string) => ({ label })) },
+  },
+});
+
     return NextResponse.json({ market });
   } catch (e) {
     console.error(e);
