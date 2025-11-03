@@ -42,11 +42,12 @@ export async function POST(req: NextRequest) {
   data: {
     title,
     description,
-    category: category ?? "General", // fallback if undefined
-    closesAt: new Date(closesAt),
+    category: category || "General", // ✅ fallback string
+    closesAt: closesAt ? new Date(closesAt) : new Date(), // ✅ guard date
     options: { create: options.map((label: string) => ({ label })) },
   },
 });
+
 
     return NextResponse.json({ market });
   } catch (e) {
