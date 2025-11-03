@@ -40,14 +40,13 @@ export async function POST(req: NextRequest) {
 
     const market = await db.market.create({
   data: {
-    title,
-    description,
-    category: category || "General", // ✅ fallback string
-    closesAt: closesAt ? new Date(closesAt) : new Date(), // ✅ guard date
+    title: title || "Untitled",
+    description: description || "",
+    category: category ?? "General", // ✅ fallback if undefined
+    closesAt: closesAt ? new Date(closesAt) : new Date(), // ✅ fallback for date
     options: { create: options.map((label: string) => ({ label })) },
   },
 });
-
 
     return NextResponse.json({ market });
   } catch (e) {
