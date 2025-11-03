@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  createdAt DateTime  @default(now())
+  credits   Int       @default(100)
+  votes     Vote[]
+  pledges   GiftPledge[]
+  creditTx  CreditTx[]
+}
+
+model Market {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  category    String
+  closesAt    DateTime
+  resolvedAt  DateTime?
+  resolution  Resolution?
+  createdAt   DateTime    @default(now())
+  options     Option[]
+  votes       Vote[]
+  pledges     GiftPledge[]
+}
+
+enum Resolution {
+  YES
+  NO
+  CANCELLED
+}
+
+model Option {
+  id        String  @id @default(cuid())
+  label     String
+  marketId  String
+  market    Market  @relation(fields: [marketId], references: [id])
+  votes     Vote[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  marketId  String
+  optionId  String
+  amount    Int
+  createdAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id])
+  market  Market @relation(fields: [marketId], references: [id])
+  option  Option @relation(fields: [optionId], references: [id])
+}
+
+model GiftPledge {
+  id        String   @id @default(cuid())
+  userId    String
+  marketId  String
+  note      String
+  capAED    Int?
+  createdAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id])
+  market  Market @relation(fields: [marketId], references: [id])
+}
+
+model CreditTx {
+  id        String   @id @default(cuid())
+  userId    String
+  delta     Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  user    User @relation(fields: [userId], references: [id])
+}
