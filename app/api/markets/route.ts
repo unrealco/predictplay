@@ -40,10 +40,10 @@ export async function POST(req: NextRequest) {
 
     const market = await db.market.create({
   data: {
-    title: title || "Untitled",
-    description: description || "",
-    category: category ?? "General", // ✅ fallback if undefined
-    closesAt: closesAt ? new Date(closesAt) : new Date(), // ✅ fallback for date
+    title: title ?? "Untitled",
+    description: description ?? "",
+    category: category ?? "General", // 👈 safe fallback
+    closesAt: closesAt ? new Date(closesAt) : new Date(), // 👈 safe fallback for date
     options: { create: options.map((label: string) => ({ label })) },
   },
 });
