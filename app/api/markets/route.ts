@@ -38,13 +38,13 @@ export async function POST(req: NextRequest) {
     const { title, description, category, closesAt, options } = parsed.data;
     if (!isAllowed(title, description)) return NextResponse.json({ error: "Disallowed content" }, { status: 400 });
 
-    const market = await db.market.create({
+   const market = await db.market.create({
   data: {
     title: title ?? "Untitled",
     description: description ?? "",
-    category: category ?? "General", // 👈 safe fallback
-    closesAt: closesAt ? new Date(closesAt) : new Date(), // 👈 safe fallback for date
-    options: { create: options.map((label: string) => ({ label })) },
+    category: typeof category === "string" ? category : "General",
+    closesAt: closesAt ? new Date(closesAt) : new Date(),
+    options: { create: (options || []).map((label: string) => ({ label })) },
   },
 });
 
